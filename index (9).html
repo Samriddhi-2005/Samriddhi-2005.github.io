@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Samriddhi Das — Software Engineer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0a0c10;
+  --bg-raised:#10141b;
+  --bg-card:#12161f;
+  --cyan:#c084fc;
+  --cyan-dim:rgba(192,132,252,0.1);
+  --violet:#a78bfa;
+  --violet-dim:rgba(167,139,250,0.12);
+  --line:rgba(192,132,252,0.15);
+  --line-soft:rgba(192,132,252,0.06);
+  --text:#ffffff;
+  --text-dim:#9ca3b0;
+  --ok:#4ade80;
+  --mono:'IBM Plex Mono',monospace;
+  --display:'Sora',sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{
+  background:var(--bg);color:var(--text);
+  font-family:var(--mono);font-size:15px;
+  line-height:1.7;overflow-x:hidden;
+}
+
+/* THE BACKGROUND CANVAS — fixed, covers everything */
+#bg-canvas{
+  position:fixed;
+  inset:0;
+  z-index:0;
+  pointer-events:none;
+  opacity:0.4;
+}
+
+/* all page content floats above */
+header,main,footer{ position:relative; z-index:2; }
+
+a{color:inherit;text-decoration:none;}
+
+/* NAV */
+header{
+  position:sticky;top:0;z-index:100;
+  background:rgba(10,12,16,0.75);
+  backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);
+  border-bottom:1px solid var(--line);
+}
+.nav-wrap{
+  max-width:1140px;margin:0 auto;padding:14px 28px;
+  display:flex;justify-content:space-between;align-items:center;
+}
+.logo-block{display:flex;flex-direction:column;gap:2px;}
+.logo{font-family:var(--display);font-weight:700;font-size:1.05rem;color:var(--text);}
+.logo .dot{color:var(--cyan);}
+.status-line{font-size:0.66rem;color:var(--text-dim);display:flex;align-items:center;gap:6px;}
+.status-dot{
+  width:6px;height:6px;border-radius:50%;background:var(--ok);
+  box-shadow:0 0 8px var(--ok);animation:pulse 2.4s ease-in-out infinite;
+}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1);}50%{opacity:0.5;transform:scale(0.85);}}
+nav.crumbs{display:flex;align-items:center;gap:4px;}
+.crumb{text-transform:uppercase;letter-spacing:0.06em;
+  padding:6px 13px;border-radius:5px;color:var(--text);
+  font-size:0.74rem;transition:all 0.2s;border:1px solid transparent;
+}
+.crumb:hover{color:var(--cyan);border-color:rgba(192,132,252,0.22);background:var(--cyan-dim);}
+
+/* LAYOUT */
+.container{max-width:1140px;margin:0 auto;padding:0 28px;}
+section{padding:110px 0;}
+.sec-head{display:flex;align-items:baseline;gap:16px;margin-bottom:52px;flex-wrap:wrap;}
+.sec-title{font-family:var(--display);font-size:clamp(1.6rem,4vw,2.2rem);font-weight:700;color:var(--text);}
+.sec-rule{flex:1;height:1px;background:linear-gradient(90deg,var(--line),transparent);min-width:60px;}
+
+/* HERO — text only, sphere is behind */
+.hero{
+  min-height:96vh;
+  display:flex;
+  align-items:center;
+  padding-top:50px;
+}
+.hero-content{max-width:720px;}
+
+.hero-eyebrow{
+  font-family:var(--mono);font-size:0.82rem;color:var(--cyan);
+  margin-bottom:22px;display:flex;align-items:center;gap:10px;
+  animation:fadeUp 0.8s ease both;
+}
+.hero-eyebrow::before{content:'';width:24px;height:1px;background:var(--cyan);}
+
+.hero-name{
+  font-family:var(--display);font-weight:800;
+  font-size:clamp(3rem,8vw,5.8rem);
+  line-height:1.08;letter-spacing:-0.02em;color:var(--text);
+  margin-bottom:20px;animation:fadeUp 0.8s 0.1s ease both;
+}
+.hero-name .accent{color:var(--cyan);}
+
+.hero-subtitle{
+  font-family:var(--display);font-weight:600;
+  font-size:clamp(1.2rem,2.8vw,1.65rem);
+  color:rgba(255,255,255,0.5);
+  margin-bottom:10px;animation:fadeUp 0.8s 0.16s ease both;
+}
+
+.hero-type-line{
+  font-family:var(--mono);font-size:clamp(0.85rem,1.5vw,0.98rem);
+  color:var(--cyan);margin-bottom:28px;min-height:1.6em;
+  animation:fadeUp 0.8s 0.22s ease both;
+}
+.type-cursor{animation:blink 1s step-end infinite;}
+@keyframes blink{0%,100%{opacity:1;}50%{opacity:0;}}
+
+.hero-desc{
+  font-family:var(--mono);font-size:0.96rem;color:var(--text-dim);
+  margin-bottom:40px;max-width:560px;line-height:1.9;
+  animation:fadeUp 0.8s 0.28s ease both;
+}
+.hero-desc strong{color:var(--text);font-weight:600;}
+
+.btn-row{display:flex;gap:14px;flex-wrap:wrap;animation:fadeUp 0.8s 0.36s ease both;}
+.btn{
+  font-family:var(--mono);font-weight:600;font-size:0.76rem;
+  padding:13px 26px;border-radius:6px;letter-spacing:0.08em;
+  text-transform:uppercase;transition:all 0.22s;cursor:pointer;
+  display:inline-flex;align-items:center;gap:8px;
+}
+.btn-fill{background:var(--cyan);color:#0a0c10;border:1px solid var(--cyan);}
+.btn-fill:hover{box-shadow:0 0 28px rgba(192,132,252,0.35);transform:translateY(-2px);}
+.btn-outline{color:var(--text);border:1px solid rgba(255,255,255,0.2);}
+.btn-outline:hover{border-color:var(--cyan);color:var(--cyan);transform:translateY(-2px);}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(22px);}to{opacity:1;transform:translateY(0);}}
+
+/* ABOUT */
+.about-grid{display:grid;grid-template-columns:1.1fr 0.9fr;gap:60px;align-items:start;}
+.about-text p{color:var(--text-dim);margin-bottom:18px;font-size:0.93rem;}
+.about-text p:last-child{margin-bottom:0;}
+.about-text strong{color:var(--text);font-weight:600;}
+.hl{color:var(--cyan);}
+
+
+
+
+.skills-block{display:flex;flex-direction:column;gap:14px;}
+.skill-group{border:1px solid var(--line-soft);border-radius:8px;padding:16px;background:rgba(12,16,23,0.85);}
+.skill-group-label{font-size:0.64rem;letter-spacing:0.1em;color:var(--cyan);font-weight:600;margin-bottom:10px;text-transform:uppercase;}
+.tags{display:flex;flex-wrap:wrap;gap:7px;}
+.tag{font-size:0.7rem;padding:4px 10px;border-radius:4px;border:1px solid var(--line);color:var(--text-dim);transition:all 0.2s;}
+.tag:hover{border-color:var(--cyan);color:var(--cyan);background:var(--cyan-dim);}
+
+/* EXPERIENCE */
+.commit-log{position:relative;padding-left:28px;}
+.commit-log::before{content:'';position:absolute;left:0;top:8px;bottom:8px;width:1px;background:linear-gradient(180deg,var(--cyan),rgba(192,132,252,0.05));}
+.commit{position:relative;margin-bottom:36px;}
+.commit::before{content:'';position:absolute;left:-33px;top:18px;width:10px;height:10px;border-radius:50%;background:var(--cyan);border:2px solid var(--bg);box-shadow:0 0 14px rgba(192,132,252,0.5);}
+.commit-card{border:1px solid var(--line);border-radius:10px;background:rgba(12,16,23,0.88);padding:24px;transition:border-color 0.2s,box-shadow 0.2s;}
+.commit-card:hover{border-color:var(--cyan);box-shadow:0 8px 32px rgba(192,132,252,0.06);}
+.commit-head{display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:8px;margin-bottom:6px;}
+.commit-role{font-family:var(--display);font-size:1.05rem;font-weight:700;color:var(--text);}
+.commit-date{font-size:0.72rem;color:var(--text-dim);padding:3px 10px;border:1px solid var(--line);border-radius:4px;}
+.commit-org{font-size:0.8rem;color:var(--cyan);margin-bottom:14px;font-weight:500;}
+.commit-list{list-style:none;display:flex;flex-direction:column;gap:8px;}
+.commit-list li{font-size:0.88rem;color:var(--text-dim);padding-left:16px;position:relative;}
+.commit-list li::before{content:'›';position:absolute;left:0;color:var(--cyan);}
+
+/* PROJECTS */
+.proj-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:20px;}
+.proj-card{border:1px solid var(--line);border-radius:10px;background:rgba(12,16,23,0.88);overflow:hidden;transition:all 0.25s;display:flex;flex-direction:column;}
+.proj-card:hover{border-color:var(--cyan);box-shadow:0 12px 40px rgba(192,132,252,0.07);transform:translateY(-3px);}
+.proj-bar{display:flex;justify-content:space-between;align-items:center;padding:11px 16px;border-bottom:1px solid var(--line);font-size:0.72rem;background:rgba(16,20,27,0.9);}
+.proj-bar .left{color:var(--text-dim);}
+.proj-bar .comment{color:var(--cyan);}
+.proj-gh{display:flex;align-items:center;gap:6px;font-size:0.7rem;color:var(--text-dim);padding:4px 10px;border:1px solid var(--line);border-radius:4px;transition:all 0.2s;}
+.proj-gh:hover{color:var(--cyan);border-color:var(--cyan);}
+.proj-gh svg{width:13px;height:13px;fill:currentColor;}
+.proj-body{padding:20px 20px 22px;flex:1;display:flex;flex-direction:column;}
+.proj-title{font-family:var(--display);font-size:1rem;font-weight:700;color:var(--text);margin-bottom:10px;}
+.proj-desc{font-size:0.84rem;color:var(--text-dim);flex:1;margin-bottom:16px;line-height:1.7;}
+.proj-tags{display:flex;flex-wrap:wrap;gap:6px;}
+.proj-tag{font-size:0.68rem;padding:3px 9px;border-radius:3px;border:1px solid rgba(192,132,252,0.2);color:var(--cyan);background:rgba(192,132,252,0.05);}
+
+/* CONTACT */
+.contact-wrap{max-width:680px;margin:0 auto;text-align:center;}
+.contact-title{font-family:var(--display);font-size:clamp(2.2rem,5.5vw,3.6rem);font-weight:800;line-height:1.15;margin:24px 0 24px;}
+.contact-title .accent{color:var(--cyan);}
+.contact-sub{font-size:0.92rem;color:var(--text-dim);max-width:480px;margin:0 auto 36px;}
+.contact-links{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;}
+.contact-link{font-family:var(--mono);font-size:0.76rem;font-weight:500;text-transform:uppercase;letter-spacing:0.07em;padding:11px 22px;border-radius:6px;border:1px solid var(--line);color:var(--text-dim);transition:all 0.2s;}
+.contact-link:hover{border-color:var(--cyan);color:var(--cyan);background:var(--cyan-dim);}
+.contact-link.primary{border-color:var(--cyan);color:var(--cyan);}
+.contact-link.primary:hover{background:var(--cyan);color:#0a0c10;}
+
+/* EDUCATION & CERTS stacked */
+.band{padding:60px 0;}
+.band-stack{display:flex;flex-direction:column;gap:52px;}
+.band-slot h5{font-family:var(--display);font-size:0.82rem;font-weight:700;color:var(--cyan);letter-spacing:0.1em;margin-bottom:18px;text-transform:uppercase;}
+.edu-row,.cert-row{display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap;padding:12px 0;border-bottom:1px solid var(--line-soft);}
+.edu-row:last-child,.cert-row:last-child{border-bottom:none;}
+.edu-name,.cert-name{font-size:0.82rem;color:var(--text);text-transform:uppercase;letter-spacing:0.04em;}
+.edu-meta,.cert-meta{font-size:0.71rem;color:var(--text-dim);white-space:nowrap;text-transform:uppercase;letter-spacing:0.04em;}
+
+footer{text-align:center;padding:28px 24px 38px;font-size:0.7rem;color:rgba(124,130,148,0.4);border-top:1px solid var(--line-soft);}
+footer .accent{color:var(--cyan);}
+
+.reveal{opacity:0;transform:translateY(24px);transition:opacity 0.7s ease,transform 0.7s ease;}
+.reveal.visible{opacity:1;transform:translateY(0);}
+
+@media(max-width:800px){
+  .about-grid{grid-template-columns:1fr;}
+  section{padding:70px 0;}
+  .proj-grid{grid-template-columns:1fr;}
+}
+@media(max-width:560px){
+  .nav-wrap{padding:12px 18px;}
+  nav.crumbs{display:none;}
+  .container{padding:0 18px;}
+}
+</style>
+</head>
+<body>
+
+<!-- BACKGROUND CANVAS: fixed, full screen, mouse-reactive geodesic structure -->
+<canvas id="bg-canvas"></canvas>
+
+<header>
+  <div class="nav-wrap">
+    <div class="logo-block">
+      <span class="logo">Samriddhi<span class="dot">.</span></span>
+      <div class="status-line"><span class="status-dot"></span>available for opportunities</div>
+    </div>
+    <nav class="crumbs">
+      <a class="crumb" href="#about">about</a>
+      <a class="crumb" href="#experience">exp</a>
+      <a class="crumb" href="#projects">projects</a>
+      <a class="crumb" href="#contact">contact</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+
+<!-- HERO: text only, 3D shape is in bg behind it -->
+<section class="hero container">
+  <div class="hero-content">
+    <div class="hero-eyebrow">hello, world</div>
+    <h1 class="hero-name">Samriddhi <span class="accent">Das.</span></h1>
+    <div class="hero-subtitle">Engineering Intelligent Systems &</div>
+    <div class="hero-type-line" id="type-line"><span class="type-cursor">|</span></div>
+    <p class="hero-desc">
+      An analytical and detail-oriented <strong>Computer Science</strong> undergraduate.
+      I bridge the gap between machine learning, data analytics, and software engineering
+      to build predictive, scalable, and secure digital solutions.
+    </p>
+    <div class="btn-row">
+      <a href="#projects" class="btn btn-fill">View Projects ↓</a>
+      <a href="#contact" class="btn btn-outline">Get In Touch</a>
+    </div>
+  </div>
+</section>
+
+
+<!-- ABOUT -->
+<section id="about" class="container reveal">
+  <div class="sec-head">
+    <h2 class="sec-title">About</h2>
+    <div class="sec-rule"></div>
+  </div>
+  <div class="about-grid">
+    <div class="about-text">
+      <p>I am an analytical and detail-oriented <strong>Computer Science undergraduate</strong> with a strong foundation in algorithms, data analysis, and system design. Currently pursuing my B.Tech in CS&E at <span class="hl">KIIT, Bhubaneswar</span> (CGPA 8.43).</p>
+      <p>My technical journey sits at the intersection of <strong>full-stack development</strong> and <strong>data science</strong>. I build everything from REST API backends and React dashboards to deep learning pipelines — with equal attention to correctness and performance.</p>
+      <p>Outside of building systems, I am drawn to the fundamentals: how neural networks learn to see, how networks are secured, and how data tells its story before a model even touches it.</p>
+    </div>
+    <div class="skills-block">
+      <div class="skill-group">
+        <div class="skill-group-label">Languages &amp; Core</div>
+        <div class="tags"><span class="tag">Python</span><span class="tag">Java</span><span class="tag">C</span><span class="tag">SQL</span><span class="tag">JavaScript</span><span class="tag">Linux</span></div>
+      </div>
+      <div class="skill-group">
+        <div class="skill-group-label">Data Science &amp; ML</div>
+        <div class="tags"><span class="tag">PyTorch</span><span class="tag">Pandas</span><span class="tag">NumPy</span><span class="tag">LSTM</span><span class="tag">ResNet-101</span><span class="tag">RAG</span></div>
+      </div>
+      <div class="skill-group">
+        <div class="skill-group-label">Web &amp; Backend</div>
+        <div class="tags"><span class="tag">React</span><span class="tag">FastAPI</span><span class="tag">Node.js</span><span class="tag">Express</span><span class="tag">Spring Boot</span><span class="tag">MongoDB</span><span class="tag">JWT</span></div>
+      </div>
+      <div class="skill-group">
+        <div class="skill-group-label">Networking</div>
+        <div class="tags"><span class="tag">CCNA</span><span class="tag">Cisco</span><span class="tag">TCP/IP</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- EXPERIENCE -->
+<section id="experience" class="container reveal">
+  <div class="sec-head">
+    <h2 class="sec-title">Experience</h2>
+    <div class="sec-rule"></div>
+  </div>
+  <div class="commit-log">
+    <div class="commit">
+      <div class="commit-card">
+        <div class="commit-head">
+          <div class="commit-role">Data Science Intern</div>
+          <div class="commit-date">Jun 2025 — Jul 2025</div>
+        </div>
+        <div class="commit-org">Navrik Software Solutions</div>
+        <ul class="commit-list">
+          <li>Built automated data ingestion pipelines in Python to process financial bank statements, reducing manual processing effort and improving throughput speed.</li>
+          <li>Designed data transformation workflows using Pandas and NumPy to convert unstructured financial data into normalized, structured formats for downstream analytical systems.</li>
+          <li>Optimized data handling and query processes, improving the efficiency and accuracy of analytical tasks.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PROJECTS -->
+<section id="projects" class="container reveal">
+  <div class="sec-head">
+    <h2 class="sec-title">Projects</h2>
+    <div class="sec-rule"></div>
+  </div>
+  <div class="proj-grid">
+    <div class="proj-card">
+      <div class="proj-bar">
+        <span class="left"><span class="comment">#</span> sap-o2c-dashboard</span>
+        <a href="https://github.com/Samriddhi-2005/sap-o2c-dashboard" target="_blank" rel="noopener" class="proj-gh">
+          <svg viewBox="0 0 16 16"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z"/></svg>
+          GitHub
+        </a>
+      </div>
+      <div class="proj-body">
+        <div class="proj-title">SAP Order-to-Cash Integration Dashboard</div>
+        <p class="proj-desc">A full-stack web app simulating the complete order-to-cash cycle across 6 enterprise stages, with a REST API backend enforcing business logic and a React dashboard featuring live KPI analytics, pipeline tracking, and secure JWT authentication.</p>
+        <div class="proj-tags"><span class="proj-tag">React</span><span class="proj-tag">Node.js</span><span class="proj-tag">Express.js</span><span class="proj-tag">MongoDB</span><span class="proj-tag">JWT</span></div>
+      </div>
+    </div>
+    <div class="proj-card">
+      <div class="proj-bar">
+        <span class="left"><span class="comment">#</span> outfit-recommender</span>
+        <a href="https://github.com/Samriddhi-2005/GRWM-Outfit-Suggestion-System" target="_blank" rel="noopener" class="proj-gh">
+          <svg viewBox="0 0 16 16"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z"/></svg>
+          GitHub
+        </a>
+      </div>
+      <div class="proj-body">
+        <div class="proj-title">Context-Aware Outfit Recommendation System</div>
+        <p class="proj-desc">An AI-powered fashion app suggesting outfits based on visual context — pre-trained vision models integrated into a FastAPI backend with secure auth and a scalable database for user profiles and wardrobe data.</p>
+        <div class="proj-tags"><span class="proj-tag">Python</span><span class="proj-tag">React</span><span class="proj-tag">FastAPI</span><span class="proj-tag">PyTorch</span><span class="proj-tag">MongoDB</span></div>
+      </div>
+    </div>
+    <div class="proj-card">
+      <div class="proj-bar">
+        <span class="left"><span class="comment">#</span> image-caption-attention</span>
+        <a href="https://github.com/Samriddhi-2005/Image-Captioning-Show-Attend-Tell" target="_blank" rel="noopener" class="proj-gh">
+          <svg viewBox="0 0 16 16"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z"/></svg>
+          GitHub
+        </a>
+      </div>
+      <div class="proj-body">
+        <div class="proj-title">Neural Image Caption Generation with Visual Attention</div>
+        <p class="proj-desc">A deep learning model generating natural-language image descriptions by learning to focus on relevant scene regions — visual attention implemented from scratch, accuracy improved through systematic hyperparameter tuning.</p>
+        <div class="proj-tags"><span class="proj-tag">Python</span><span class="proj-tag">PyTorch</span><span class="proj-tag">ResNet-101</span><span class="proj-tag">LSTM</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact" class="container reveal">
+  <div class="contact-wrap">
+    <h2 class="contact-title">Let's Build Something <span class="accent">Great.</span></h2>
+    <p class="contact-sub">Open to internships, collaborations, and full-stack or ML roles. The fastest way to reach me is by email.</p>
+    <div class="contact-links">
+      <a href="mailto:samriddhi0721@gmail.com" class="contact-link primary">✉ samriddhi0721@gmail.com</a>
+      <a href="https://github.com/Samriddhi-2005" target="_blank" rel="noopener" class="contact-link">GitHub</a>
+      <a href="https://www.linkedin.com/in/samriddhi-das-68a885322/" target="_blank" rel="noopener" class="contact-link">LinkedIn</a>
+    </div>
+  </div>
+</section>
+
+<!-- EDUCATION & CERTS stacked -->
+<section class="band container reveal">
+  <div class="band-stack">
+    <div class="band-slot">
+      <h5>Education</h5>
+      <div class="edu-row">
+        <span class="edu-name">B.Tech, Computer Science &amp; Engineering — KIIT, Bhubaneswar</span>
+        <span class="edu-meta">Expected 2027 · CGPA 8.43</span>
+      </div>
+      <div class="edu-row">
+        <span class="edu-name">12th Grade (Science) — Mahadevi Birla World Academy</span>
+        <span class="edu-meta">May 2023 · 80%</span>
+      </div>
+      <div class="edu-row">
+        <span class="edu-name">10th Grade — Mahadevi Birla World Academy</span>
+        <span class="edu-meta">Aug 2021 · 88%</span>
+      </div>
+    </div>
+    <div class="band-slot">
+      <h5>Certificates</h5>
+      <div class="cert-row">
+        <span class="cert-name">Full Stack Web Development: Spring Boot &amp; Angular</span>
+        <span class="cert-meta">Udemy</span>
+      </div>
+      <div class="cert-row">
+        <span class="cert-name">CCNA (Networking)</span>
+        <span class="cert-meta">Cisco Networking Academy</span>
+      </div>
+      <div class="cert-row">
+        <span class="cert-name">Python &amp; AI/Data Science Fundamentals</span>
+        <span class="cert-meta">Cisco Networking Academy</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  Designed &amp; built by <span class="accent">Samriddhi Das</span> · © 2026
+</footer>
+
+<script>
+/* ============================================================
+   BACKGROUND: Geodesic icosahedron — fixed, full screen
+   Mouse moves tilt the shape (x/y axis) like Aditya's
+   Structure: different — torus-knot-inspired node mesh
+   ============================================================ */
+(function(){
+  const c = document.getElementById('bg-canvas');
+  const ctx = c.getContext('2d');
+  let W, H, dpr = window.devicePixelRatio || 1;
+  let mx = 0.5, my = 0.5; // normalized 0..1
+
+  function resize(){
+    W = window.innerWidth; H = window.innerHeight;
+    c.width = W * dpr; c.height = H * dpr;
+    c.style.width = W + 'px'; c.style.height = H + 'px';
+    ctx.scale(dpr, dpr);
+  }
+  resize();
+  window.addEventListener('resize', () => { ctx.setTransform(1,0,0,1,0,0); resize(); });
+  window.addEventListener('mousemove', e => {
+    mx = e.clientX / W;
+    my = e.clientY / H;
+  });
+
+  // Build a torus-knot point cloud
+  const N = 220;
+  const verts = [];
+  for(let i = 0; i < N; i++){
+    const t = (i / N) * Math.PI * 2;
+    // torus knot p=2, q=3
+    const p = 2, q = 3, R = 0.55, r = 0.22;
+    const x = (R + r * Math.cos(q * t)) * Math.cos(p * t);
+    const y = (R + r * Math.cos(q * t)) * Math.sin(p * t);
+    const z = r * Math.sin(q * t);
+    verts.push([x * 0.5, y * 0.5, z * 0.5]);
+  }
+  // add scattered orbital nodes
+  for(let i = 0; i < 60; i++){
+    const phi = Math.acos(2 * Math.random() - 1);
+    const theta = Math.random() * Math.PI * 2;
+    const rad = 0.55 + Math.random() * 0.25;
+    verts.push([
+      rad * Math.sin(phi) * Math.cos(theta),
+      rad * Math.sin(phi) * Math.sin(theta),
+      rad * Math.cos(phi)
+    ]);
+  }
+
+  let rotY = 0, rotX = 0;
+  let targetRY = 0, targetRX = 0;
+
+  function rotY3(v, a){ const c=Math.cos(a),s=Math.sin(a); return[v[0]*c+v[2]*s,v[1],-v[0]*s+v[2]*c]; }
+  function rotX3(v, a){ const c=Math.cos(a),s=Math.sin(a); return[v[0],v[1]*c-v[2]*s,v[1]*s+v[2]*c]; }
+
+  function project(v){
+    const cx = W/2, cy = H/2;
+    const scale = Math.min(W, H) * 0.72;
+    const z = v[2] + 2.2;
+    return [cx + v[0]/z*scale, cy - v[1]/z*scale, z];
+  }
+
+  function frame(){
+    // smooth rotate toward mouse
+    targetRY = (mx - 0.5) * 1.8;
+    targetRX = (my - 0.5) * 1.2;
+    rotY += (targetRY - rotY) * 0.03;
+    rotX += (targetRX - rotX) * 0.03;
+    // slow auto-spin offset
+    const autoSpin = Date.now() * 0.0003;
+
+    ctx.clearRect(0, 0, W, H);
+
+    const projected = verts.map(v => {
+      let r = rotY3(v, rotY + autoSpin);
+      r = rotX3(r, rotX);
+      return project(r);
+    });
+
+    // edges: connect knot in order + nearest neighbours
+    const CONNECT_DIST_SQ = 0.08; // in 3d space
+    for(let i = 0; i < verts.length; i++){
+      // sequential knot edges
+      if(i < N - 1){
+        const [ax,ay,az] = projected[i];
+        const [bx,by,bz] = projected[i+1];
+        const depth = (az+bz)/2;
+        const a = Math.max(0, Math.min(0.55, (depth-1.4)/1.2)) * 0.65;
+        ctx.beginPath();
+        ctx.moveTo(ax,ay); ctx.lineTo(bx,by);
+        ctx.strokeStyle = `rgba(192,132,252,${a})`;
+        ctx.lineWidth = 0.7;
+        ctx.stroke();
+      }
+      // cross connections to nearby verts
+      for(let j = i+1; j < verts.length; j++){
+        const dx=verts[i][0]-verts[j][0];
+        const dy=verts[i][1]-verts[j][1];
+        const dz=verts[i][2]-verts[j][2];
+        const d2=dx*dx+dy*dy+dz*dz;
+        if(d2 < CONNECT_DIST_SQ){
+          const [ax,ay,az]=projected[i],[bx,by,bz]=projected[j];
+          const depth=(az+bz)/2;
+          const a=Math.max(0,Math.min(0.4,(depth-1.4)/1.2))*(1-d2/CONNECT_DIST_SQ)*0.5;
+          ctx.beginPath();
+          ctx.moveTo(ax,ay);ctx.lineTo(bx,by);
+          ctx.strokeStyle=`rgba(210,160,255,${a})`;
+          ctx.lineWidth=0.5;
+          ctx.stroke();
+        }
+      }
+    }
+
+    // glow dots at vertices
+    for(const [px,py,pz] of projected){
+      const a = Math.max(0, Math.min(1,(pz-1.4)/1.1)) * 0.7;
+      if(a < 0.05) continue;
+      ctx.beginPath();
+      ctx.arc(px, py, 1.4, 0, Math.PI*2);
+      ctx.fillStyle = `rgba(230,200,255,${a})`;
+      ctx.fill();
+    }
+
+    // subtle centre glow
+    const grd = ctx.createRadialGradient(W/2,H/2,0,W/2,H/2,Math.min(W,H)*0.45);
+    grd.addColorStop(0,'rgba(192,132,252,0.03)');
+    grd.addColorStop(1,'transparent');
+    ctx.fillStyle = grd;
+    ctx.fillRect(0,0,W,H);
+
+    requestAnimationFrame(frame);
+  }
+  frame();
+})();
+
+/* TYPEWRITER */
+const phrases=['Building ML Pipelines.','Full-Stack Engineer.','Data Science Enthusiast.','Deep Learning Explorer.','Open to Opportunities.'];
+let pi=0,ci=0,del=false;
+const tel=document.getElementById('type-line');
+function type(){
+  const ph=phrases[pi];
+  tel.innerHTML=(del?ph.substring(0,ci--):ph.substring(0,ci++))+'<span class="type-cursor">|</span>';
+  let d=del?50:80;
+  if(!del&&ci>ph.length){d=1800;del=true;}
+  else if(del&&ci<0){del=false;ci=0;pi=(pi+1)%phrases.length;d=400;}
+  setTimeout(type,d);
+}
+setTimeout(type,900);
+
+/* SCROLL REVEAL */
+const obs=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');obs.unobserve(e.target);}});},{threshold:0.1});
+document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
+</script>
+</body>
+</html>
